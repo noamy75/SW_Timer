@@ -1,7 +1,7 @@
 /*
 SW Timer implementation.
 The implementataion allows scheduling up to 10 simultaneous SW timer instances, based on a single HW timer module.
-The HW timer is connected to the CPU HW bus, and its registers are mapped to the addresses defined below.
+The HW timer is connected to the CPU data bus, and its registers are mapped to the addresses defined below.
 The HW timer is implemented by a free running 32-bit counter block, counting up at frequency of 1MHz.
 */
 
@@ -78,9 +78,8 @@ void timer_set(int timer_id, uint32 wait_us) {
 	*tmr_cmp_reg = current_timer_value + min_remain; // Next interrupt is min_remain from now
 }
 
-//Timer interrupt callback function. Interrupt configured as a Level in the CPU.
+// Timer interrupt callback function. The interrupt is configured as a Level in the CPU.
 __interrupt void timer_interrupt(void) {
-	int fired_timer_id;
 
 	// Find the minimal remain as this is the current interrupt that's firing
 	uint32 min_remain = find_minimal_remain();
@@ -96,8 +95,7 @@ __interrupt void timer_interrupt(void) {
 		// The firing timers now have remain==0 so update them and print
 		if (timer_data[i].remain == 0) {
 			timer_data[i].remain = timer_data[i].wait_us;
-			fired_timer_id = i;
-			printf("fired_timer_id %d\n", fired_timer_id);
+			printf("Firing timer id = %d\n", i);
 		}
 	}
 
