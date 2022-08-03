@@ -27,6 +27,7 @@ volatile uint32 tmr_val_reg = 0; // Read-Only register - current uint32 timer va
 volatile uint32 tmr_cmp_reg = 0; // Write-Only register - uint32 timer interrupt compare value
 volatile uint32 tmr_clr_reg = 0; // Write-Only uint32 register - write any value to clear interrupt
 HANDLE h_hw_timer = NULL; // hw timer thread handle
+HANDLE h_isr = NULL; // isr thread handle
 DWORD hw_timer_tid; // hw timer thread ID (tid)
 BOOL g_no_errors = TRUE; // Indicates an error that leads to finishing the program
 timer_data_t timer_data[TMR_NUM] = { 0 }; // For inactive timer entries: wait_us==0, remain==0
@@ -278,13 +279,12 @@ void show_main_menu()
 // Entry point of the HW timer simulating thread
 void hw_timer_thread()
 {
+	DWORD isr_tid; // isr thread ID
 	while (TRUE) {
 		tmr_val_reg++;
 		//printf("hw timer increased by 1, tmr_val_reg = %d\n", tmr_val_reg);
 		if (tmr_val_reg == tmr_cmp_reg)
 		{
-			DWORD isr_tid;
-			HANDLE h_isr = NULL;
 			h_isr = create_thread_simple((LPTHREAD_START_ROUTINE)timer_interrupt, &isr_tid);
 			if (h_isr == NULL)
 			{ // ISR thread creation failed
