@@ -25,7 +25,7 @@ typedef struct {
 
 volatile uint32 tmr_val_reg = 0; // Read-Only register - current uint32 timer value
 volatile uint32 tmr_cmp_reg = 0; // Write-Only register - uint32 timer interrupt compare value
-volatile uint32 tmr_int_clr_reg = 0; // Write-Only uint32 register - write any value to clear interrupt
+volatile uint32 tmr_clr_reg = 0; // Write-Only uint32 register - write any value to clear interrupt
 HANDLE h_hw_timer = NULL; // hw timer thread handle
 DWORD hw_timer_tid; // hw timer thread ID (tid)
 BOOL g_no_errors = TRUE; // Indicates an error that leads to finishing the program
@@ -120,7 +120,7 @@ void timer_interrupt(void) {
 	tmr_cmp_reg = last_update_timer_value + min_remain;
 
 	// End of interrupt - clear
-	tmr_int_clr_reg = 1;
+	tmr_clr_reg = 1;
 
 	return 0;
 }
