@@ -15,6 +15,7 @@ The HW timer is implemented by a free running 32-bit counter block, counting up 
 #define STRINGS_ARE_EQUAL( Str1, Str2 ) ( strcmp( (Str1), (Str2) ) == 0 )
 
 typedef unsigned int uint32;
+typedef unsigned char uint8;
 
 typedef struct {
 	uint32 wait_us; // The constant time interval of the timer
@@ -50,7 +51,7 @@ uint32 find_minimal_remain() {
 }
 
 // A function that sets a new timer
-void set_timer(int timer_id, uint32 wait_us) {
+void set_timer(uint8 timer_id, uint32 wait_us) {
 
 	// input Timer ID exceeds limit
 	if (timer_id >= TMR_NUM) {
@@ -183,7 +184,7 @@ void finish_program_routine(HANDLE* thread_handle)
 }
 
 // This function deactivates a timer
-void remove_timer(int timer_id)
+void remove_timer(uint8 timer_id)
 {
 	// input Timer ID exceeds limit
 	if (timer_id >= TMR_NUM) {
@@ -241,9 +242,9 @@ void show_main_menu()
 			else if (STRINGS_ARE_EQUAL(decision_str, "2")) {
 				// client chose to set a new timer
 				printf("Insert timer ID and desired interval (ex: 1, 5):\n");
-				int timer_id;
+				uint8 timer_id;
 				uint32 wait_us;
-				scanf_s("%d, %u", &timer_id, &wait_us); // wait_us can be given negative - it's not a bug, it's a feature!
+				scanf_s("%u, %u", &timer_id, &wait_us); // wait_us can be given negative - it's not a bug, it's a feature!
 				getc(stdin);
 				set_timer(timer_id, wait_us);
 				decision = atoi(decision_str); // convert the string to integer
@@ -251,8 +252,8 @@ void show_main_menu()
 			else if (STRINGS_ARE_EQUAL(decision_str, "3")) {
 				// client chose to remove a timer
 				printf("Insert timer ID to remove:\n");
-				int timer_id;
-				scanf_s("%d", &timer_id);
+				uint8 timer_id;
+				scanf_s("%u", &timer_id);
 				getc(stdin);
 				remove_timer(timer_id);
 				decision = atoi(decision_str); // convert the string to integer
