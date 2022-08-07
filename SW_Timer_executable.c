@@ -9,6 +9,7 @@ The HW timer is implemented by a free running 32-bit counter block, counting up 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #define TMR_NUM 10
 #define MAX_INPUT_LENGTH 256
@@ -134,8 +135,8 @@ HANDLE create_thread_simple(LPTHREAD_START_ROUTINE p_start_routine, LPDWORD p_th
 {
 	if (NULL == p_start_routine)
 	{ // If thread has no start routine
-		printf("ERROR: Error when creating a thread");
-		printf("Received null pointer");
+		printf("ERROR: Error when creating a thread\n");
+		printf("Received null pointer\n");
 		return NULL;
 	}
 
@@ -195,7 +196,7 @@ void remove_timer(uint8 timer_id)
 	
 	// Timer is already inactive
 	if (timer_data[timer_id].wait_us == 0)
-		printf("Timer is already inactive");
+		printf("Timer is already inactive\n");
 	
 	// Deactivate timer
 	else {
@@ -217,7 +218,7 @@ void display_timers()
 	}
 
 	if (all_timers_inactive)
-		printf("All timers are inactive");
+		printf("All timers are inactive\n");
 }
 
 // This function prints the main menu to the user
@@ -245,7 +246,7 @@ void show_main_menu()
 				printf("Insert timer ID and desired interval (ex: 1, 5):\n");
 				uint8 timer_id;
 				uint32 wait_us;
-				scanf_s("%u, %u", &timer_id, &wait_us); // wait_us can be given negative - it's not a bug, it's a feature!
+				scanf_s("%" SCNu8 ", %u", &timer_id, &wait_us); // wait_us can be given negative - it's not a bug, it's a feature!
 				getc(stdin);
 				set_timer(timer_id, wait_us);
 				decision = atoi(decision_str); // convert the string to integer
@@ -254,7 +255,7 @@ void show_main_menu()
 				// client chose to remove a timer
 				printf("Insert timer ID to remove:\n");
 				uint8 timer_id;
-				scanf_s("%u", &timer_id);
+				scanf_s("%" SCNu8, &timer_id);
 				getc(stdin);
 				remove_timer(timer_id);
 				decision = atoi(decision_str); // convert the string to integer
